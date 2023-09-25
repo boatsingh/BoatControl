@@ -51,7 +51,7 @@ class Node:
         predict_image = result_image.xyxy[0]
         img_size = result_image.ims[0].shape[:]
         # img_centre_y = img_size[0] / 2
-        img_centre_x = img_size[1] / 2
+        img_centre_x = img_size[1] / 2   #------------image_centre_x is in defined globally also-----------
         #Finds coordinates of the bounding box
         bb_tuples = []
         for img in predict_image:
