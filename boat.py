@@ -25,6 +25,8 @@ def area_comp (coord) :
 class Node:
     def __init__(self):
         # self.boundingboxes = rospy.Subsciber("/darknet_ros/bounding_boxes", BoundingBoxes, self.bounding_callback)
+
+        #Check Subsciber topic name (self.image_sub)
         self.thrust_control = rospy.Publisher("/mavros/rc/override", OverrideRCIn, queue_size=10)
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
         self.cv_bridge = CvBridge()
@@ -47,7 +49,7 @@ class Node:
         result_image = self.model(cv_image)
         predict_image = result_image.xyxy[0]
         img_size = result_image.ims[0].shape[:]
-        img_centre_y = img_size[0] / 2
+        # img_centre_y = img_size[0] / 2
         img_centre_x = img_size[1] / 2
         #Finds coordinates of the bounding box
         bb_tuples = []
