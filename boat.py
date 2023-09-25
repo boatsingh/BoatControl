@@ -24,20 +24,37 @@ def area_comp (coord) :
 
 class Node:
     def __init__(self):
-        self.boundingboxes = rospy.Subsciber("/darknet_ros/bounding_boxes", BoundingBoxes, self.bounding_callback)
+        # self.boundingboxes = rospy.Subsciber("/darknet_ros/bounding_boxes", BoundingBoxes, self.bounding_callback)
         self.thrust_control = rospy.Publisher("/mavros/rc/override", OverrideRCIn, queue_size=10)
+        self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
+        self.cv_bridge = CvBridge()
 
+        self.model = torch.hub.load('path_to_yolov5_folder', 'custom', path='path_to_best.onnx', source='local')
+        
         self.rc_msg = OverrideRCIn()
     
-    def bounding_callback(self, boxes):
-        bb_tuples = []
-        for box in boxes:
-            x_min = box.xmin
-            y_min = box.ymin
-            x_max = box.xmax
-            y_max = box.ymax
-            bb_tuples.append((x_min, y_min, x_max, y_max))
+    def image_callback(self, img_data):
+        # bb_tuples = []
+        # for box in boxes:
+        #     x_min = box.xmin
+        #     y_min = box.ymin
+        #     x_max = box.xmax
+        #     y_max = box.ymax
+        #     bb_tuples.append((x_min, y_min, x_max, y_max))
         
+        #Copied from control.py
+        cv_image = self.cv_bridge.imgmsg_to_cv2(img_data)
+        result_image = self.model(cv_image)
+        predict_image = result_image.xyxy[0]
+        img_size = result_image.ims[0].shape[:]
+        img_centre_y = img_size[0] / 2
+        img_centre_x = img_size[1] / 2
+        #Finds coordinates of the bounding box
+        bb_tuples = []
+        for img in predict_image:
+            x1, y1, x2, y2, _, _ = img.tolist()
+            bb_tuples.append((x1, y1, x2, y2))
+
         sorted_bb_tuples = sorted(bb_tuples, key=area_comp, reverse=True)
         bb_centres = [((x1 + x2) / 2, (y1 + y2) / 2) for (x1, y1, x2, y2) in sorted_bb_tuples]
 
