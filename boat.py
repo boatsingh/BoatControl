@@ -58,6 +58,7 @@ class Node:
         sorted_bb_tuples = sorted(bb_tuples, key=area_comp, reverse=True)
         bb_centres = [((x1 + x2) / 2, (y1 + y2) / 2) for (x1, y1, x2, y2) in sorted_bb_tuples]
 
+        #If there are no bounding boxes...
         if len(bb_centres == 0):
             if (flag):
                 flag = False
@@ -69,9 +70,10 @@ class Node:
                 self.rc_msg.channels[throttle_channel - 1] = 1110
             return
 
+        #Selects the box with largest area...
         req_obj = bb_centres[0]
 
-
+        #Aligns the boat with the detected object...Threshold is 80 pixels...
         if (abs(img_centre_x - req_obj[0]) > 80.0):
             pwm_speed = 1500 + (img_centre_x - req_obj[0])
             self.rc_msg.channels[steering_channel - 1] = pwm_speed
