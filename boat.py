@@ -24,6 +24,7 @@ def area_comp (coord) :
 
 class Node:
     def __init__(self):
+        rospy.init_node('boat_control')
         # self.boundingboxes = rospy.Subsciber("/darknet_ros/bounding_boxes", BoundingBoxes, self.bounding_callback)
 
         #Check Subsciber topic name (self.image_sub)
