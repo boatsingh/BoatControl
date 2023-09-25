@@ -83,4 +83,5 @@ class Node:
             self.rc_msg.channels[rudder_channel - 1] = (img_centre_x - req_obj[0]) / 10
         else:
             self.rc_msg.channels[rudder_channel - 1] = 0
+            self.rc_msg.channels[steering_channel - 1] = 0 #Recently added...
             self.rc_msg.channels[throttle_channel - 1] = 1250
