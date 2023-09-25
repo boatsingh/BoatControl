@@ -12,7 +12,7 @@ import cv2
 from mavros_msgs.msg import OverrideRCIn
 
 flag = True
-img_centre_x = 416 / 2
+img_centre_x = 416 / 2     #------------image_centre_x is in image_callback also-----------
 throttle_channel = 3  
 steering_channel = 1 
 rudder_channel = 2
